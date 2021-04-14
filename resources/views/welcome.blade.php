@@ -22,7 +22,7 @@
                    @if(count($productData) > 0)
                        @foreach($productData as $data)
                            <div class="card mx-3 my-3" style="width: 282px; max-height: 500px">
-                               <img src="{{asset('images/product/nokia.jpg')}}" alt="Image" class="card-img-top">
+                               <img src="{{asset('images/'.$data->image)}}" alt="Image" class="card-img-top" style="height: 250px">
                                <div class="card-body">
                                    <div class="card-title d-flex justify-content-between">
                                        <div class="font-weight-bold h5">
@@ -32,7 +32,7 @@
                                            <a href="{{route('product.edit', $data->id)}}" class="Edit Product"><i class="fa fa-edit"></i></a>
                                        @endauth
                                    </div>
-                                   <p class="card-text"><b>Category: </b> {{ $category[$data->category] }}</p>
+                                   <p class="card-text">Category:  <b>{{$data->category->name}}</b></p>
                                    <p class="card-text">{{ $data->details }}</p>
                                    <p class="card-text">
                                        Rating:

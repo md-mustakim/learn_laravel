@@ -19,17 +19,28 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <form action="{{route('product.store')}}" method="post">
+                    <form action="{{route('product.store')}}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-3 row">
-                            <label for="category" class="col-form-label col-sm-4">Category</label>
+                            <div class="col-form-label col-sm-4">
+                                <label for="category">Category</label>
+                                <a href="{{route('category.create')}}" title="Create Category"><i class="fa fa-plus"></i></a>
+                            </div>
                             <div class="col-sm-8">
-                                <select name="category" id="category" class="form-control">
-                                    @foreach($category as $key => $value)
-                                        <option value="{{$key}}">{{$value}}</option>
-                                    @endforeach
-                                </select>
-                                @error('category')
+                                @if(count($categories) > 0)
+                                    <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror">
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}"> {{ $category->name }} </option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <select name="category" id="category" class="form-control" disabled required>
+                                        <option value="">No Category Found</option>
+                                    </select>
+                                    <p class="alert alert-danger mt-1"> Please Create Category First <a
+                                            href="{{route('category.create')}}">Click Here</a> To create Category </p>
+                                @endif
+                                @error('category_id')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -52,9 +63,24 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="mb-3 row">
+                            <label for="image" class="col-form-label col-sm-4">Product Image</label>
+                            <div class="col-sm-8">
+                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image') }}">
+                                @error('image')
+                                <div class="alert alert-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="d-flex justify-content-center">
                             <div class="">
-                                <button class="btn btn-secondary form-control">Save <i class="fa fa-save"></i> </button>
+                                @if(count($categories) > 0)
+                                    <button class="btn btn-secondary form-control">Save <i class="fa fa-save"></i> </button>
+                                @else
+                                    <button class="btn btn-secondary form-control" disabled>Save <i class="fa fa-save"></i> </button>
+                                    @endif
                             </div>
                         </div>
                     </form>

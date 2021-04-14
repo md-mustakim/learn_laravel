@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,36 +17,33 @@ class ProductController extends Controller
     public function index()
     {
         $data = product::all();
-        return view('welcome', ['productData' => $data, 'category' => $this->defaultCategory()]);
+        return view('welcome', ['productData' => $data, 'category' => Category::all()]);
     }
-
-    public function defaultCategory(): array{
-        return array(
-            '1' => 'I Phone',
-            '2' => 'Samsung',
-            '3' => 'Nokia',
-            '4' => 'Oppo',
-            '5' => 'Xaiomi',
-            '6' => 'Realme'
-        );
-    }
-
 
     public function create()
     {
-        return view('product.create', ['category' => $this->defaultCategory()]);
+        $categories = Category::all();
+        return view('product.create', compact('categories'));
     }
 
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|unique:products',
-            'details' => 'required'
+            'details' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
+
+
+        $imageName = time().'.'.$request->image->extension();
+
+        $request->image->move(public_path('images'), $imageName);
+
         $productModel = new product();
         $productModel->name = $request->name;
         $productModel->details = $request->details;
-        $productModel->category = $request->category;
+        $productModel->category_id = $request->category_id;
+        $productModel->image = $imageName;
         $productModel->save();
         return redirect()->route('product.index')->with('message', 'Create Success');
     }
