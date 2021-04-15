@@ -22,7 +22,7 @@
                    @if(count($productData) > 0)
                        @foreach($productData as $data)
                            <div class="card mx-3 my-3" style="width: 282px; max-height: 500px">
-                               <img src="{{asset('images/'.$data->image)}}" alt="Image" class="card-img-top" style="height: 250px">
+                               <img src="{{asset('images/'.$data->image)}}" alt="Image" class="card-img-top" style="height: 180px">
                                <div class="card-body">
                                    <div class="card-title d-flex justify-content-between">
                                        <div class="font-weight-bold h5">

@@ -80,6 +80,7 @@ class ProductController extends Controller
     public function destroy(product $product): RedirectResponse
     {
         $productModel = product::findOrFail($product->id);
+        unlink(public_path('images/'.$productModel->image)); // delete file also
         $productModel->delete();
         return redirect()->route('product.index')->with('message', 'Delete Success');
     }

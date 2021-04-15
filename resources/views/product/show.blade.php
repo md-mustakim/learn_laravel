@@ -9,19 +9,22 @@
     <div class="d-flex justify-content-center py-5">
         <div class="">
             @if(count(array($productData)) > 0)
-                <div class=""></div>
-                <table class="table table-bordered">
-                   <tr>
-                       <td> <b>Name:</b> </td>
-                       <td>  {{ $productData->name }}</td>
-                   </tr>
-                   <tr>
-                       <td> <b>Details:</b> </td>
-                       <td>  {{ $productData->details }}</td>
-                   </tr>
-                </table>
+                <div class="card">
+                    <div class="card-header">
+                        <img src="{{asset('images/'.$productData->image)}}" alt="image" style="width: 500px; height: 300px;">
+                    </div>
+                    <div class="card-body my-2">
+                        <div class="card-text">
+                        Name:    <b>{{ $productData->name }}</b>
+                        </div>
+                        <div class="card-text my-2">
+                           Details <b>{{ $productData->details }}</b>
+                        </div>
+                        <a href="{{route('product.index')}}" class="btn btn-secondary">Go Back</a>
+                    </div>
+                </div>
             @endif
-                <a href="{{route('product.index')}}">Go Back</a>
+
         </div>
     </div>
 @endsection
