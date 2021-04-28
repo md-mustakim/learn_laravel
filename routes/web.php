@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -27,5 +28,14 @@ Auth::routes();
 
 Route::resource('product','ProductController');
 Route::resource('category','CategoryController');
+Route::resource('employee','EmployeeController');
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::prefix('user')->group(function (){
+    Route::get('create', [UserController::class, 'create'])->name('user.create');
+    Route::get('login', [UserController::class, 'showLoginPage'])->name('user.login');
+    Route::post('login', [UserController::class, 'userLogin'])->name('user.login');
+    Route::post('store', [UserController::class, 'store'])->name('user.store');
+    Route::delete('delete/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+});
