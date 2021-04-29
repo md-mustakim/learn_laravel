@@ -66,7 +66,11 @@
                                 @foreach($users as $user)
                                     <tr>
                                         <td>{{ $user->id }}</td>
-                                        <td>{{ $user->name }}</td>
+                                        <td>
+                                            <a href="{{ route('user.show', $user->id) }}">
+                                                {{ $user->name }}
+                                            </a>
+                                        </td>
                                         <td>{{ $user->email }}</td>
                                         <td>
                                             <form onsubmit="return confirm('Are You sure ?')" action="{{ route('user.destroy', $user->id) }}" method="POST">

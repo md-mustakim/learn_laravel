@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 /**
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property mixed category
  * @property mixed id
  */
-class product extends Model
+class Product extends Model
 {
     //
     protected $fillable = [
@@ -22,7 +23,7 @@ class product extends Model
         'image'
     ];
 
-    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }

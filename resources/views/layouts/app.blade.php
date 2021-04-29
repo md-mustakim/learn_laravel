@@ -19,6 +19,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('fa/css/all.min.css')}}">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <body>
     <div id="app">
@@ -86,5 +87,7 @@
             @yield('content')
         </main>
     </div>
+
+@stack('js')
 </body>
 </html>

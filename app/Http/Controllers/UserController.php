@@ -36,6 +36,11 @@ class UserController extends Controller
         return view('user.login');
     }
 
+    public function show(User $user)
+    {
+        return view('user.show', ['user' => $user]);
+    }
+
     public function userLogin(Request $request): RedirectResponse
     {
         $attributes =  $request->validate([

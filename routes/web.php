@@ -34,6 +34,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::prefix('user')->group(function (){
     Route::get('create', [UserController::class, 'create'])->name('user.create');
+    Route::get('show/{user}', [UserController::class, 'show'])->name('user.show');
+
     Route::get('login', [UserController::class, 'showLoginPage'])->name('user.login');
     Route::post('login', [UserController::class, 'userLogin'])->name('user.login');
     Route::post('store', [UserController::class, 'store'])->name('user.store');

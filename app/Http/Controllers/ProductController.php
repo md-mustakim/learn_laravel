@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Category;
-use App\product;
+use App\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $data = product::all();
+        $data = Product::all();
         return view('welcome', ['productData' => $data, 'category' => Category::all()]);
     }
 
@@ -39,7 +39,7 @@ class ProductController extends Controller
 
         $request->image->move(public_path('images'), $imageName);
 
-        $productModel = new product();
+        $productModel = new Product();
         $productModel->name = $request->name;
         $productModel->details = $request->details;
         $productModel->category_id = $request->category_id;
@@ -49,27 +49,26 @@ class ProductController extends Controller
     }
 
 
-    public function show(product $product)
+    public function show(Product $product)
     {
-        $productShowData = product::findOrFail($product->id);
+        $productShowData = Product::findOrFail($product->id);
         return view('product.show', ['productData' => $productShowData]);
     }
 
 
-    public function edit(product $product)
+    public function edit(Product $product)
     {
-        $productShowData = product::findOrFail($product->id);
-        return view('product.edit', ['productData' => $productShowData]);
+        return view('product.edit', ['productData' => $product, 'categories' => Category::all()]);
     }
 
 
-    public function update(Request $request, product $product): RedirectResponse
+    public function update(Request $request, Product $product): RedirectResponse
     {
         $request->validate([
             'name' => 'required|unique:products,name,'.$product->id,
             'details' => 'required'
         ]);
-        $productModel = product::findOrFail($product->id);
+        $productModel = Product::findOrFail($product->id);
         $productModel->name = $request->name;
         $productModel->details = $request->details;
         $productModel->save();
@@ -77,7 +76,7 @@ class ProductController extends Controller
     }
 
 
-    public function destroy(product $product): RedirectResponse
+    public function destroy(Product $product): RedirectResponse
     {
         $productModel = product::findOrFail($product->id);
         unlink(public_path('images/'.$productModel->image)); // delete file also

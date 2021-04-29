@@ -11,7 +11,7 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="h5 font-weight-bold">
-                            Register New Product
+                            Add Product
                         </div>
                         <a href="{{route('product.index')}}" class="btn btn-success">
                             <i class="fa fa-home"></i>
@@ -29,6 +29,7 @@
                             <div class="col-sm-8">
                                 @if(count($categories) > 0)
                                     <select name="category_id" id="category_id" class="form-control @error('category_id') is-invalid @enderror">
+                                        <option value="">Select Category</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}"> {{ $category->name }} </option>
                                         @endforeach
@@ -66,11 +67,22 @@
 
                         <div class="mb-3 row">
                             <label for="image" class="col-form-label col-sm-4">Product Image</label>
-                            <div class="col-sm-8">
-                                <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" value="{{ old('image') }}">
+                            <div class="col-sm-4">
+                                <input type="file"
+                                       class="form-control-file @error('image') is-invalid @enderror"
+                                       id="image"
+                                       name="image"
+                                       onchange="PreviewImage(this)"
+                                       value="{{ old('image') }}">
                                 @error('image')
                                 <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
+                            </div>
+                            <div class="col-sm-4">
+                                <img src="{{ asset('siteImage/download.png') }}"
+                                     alt="" id="previewImg"
+                                     accept="image/x-png,image/gif,image/jpeg"
+                                     style="width: 100px; height: 100px;">
                             </div>
                         </div>
 
@@ -91,3 +103,21 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        function PreviewImage(input){
+            let file = $("input[type=file]").get(0).files[0];
+
+            if(file){
+                let reader = new FileReader();
+
+                reader.onload = function(){
+                    $("#previewImg").attr("src", reader.result);
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+@endpush
