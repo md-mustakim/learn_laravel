@@ -1,12 +1,13 @@
-@extends('layouts.app')
+@extends('layouts.theme')
 
 @section('content')
     <div class="container">
         <div class="row m-0 p-0">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
-                        <span class="h4 fw-bold">Create new Employee</span>
+                    <div class="card-header card-header-primary">
+                        <div class="card-title h4 fw-bold">Create new Employee</div>
+                        <div class="card-category"></div>
                     </div>
                     <div class="card-body">
                         @if(Session::has('message'))
@@ -22,50 +23,64 @@
                             @error('file') <span class="fw-bold text-danger">{{ $message }}</span> @enderror
                             <div class="d-flex justify-content-center my-3">
                                 <button class="btn btn-primary">Submit <i class="fa fa-save"></i></button>
+
                             </div>
                         </form>
+                            <button class="btn btn-primary btn-block" onclick="md.showNotification('top','right', 'Update success')">Bottom Right</button>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        Employee List
+                    <div class="card-header card-header-warning">
+                        <h3 class="card-title">Employees Stats</h3>
+                        <p class="card-category">Total Employee {{ count($employees) }}</p>
                     </div>
-                    <div class="card-body">
-                        @if(count($employees) > 0)
-                        <table class="table table-sm">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>CV</th>
-                                <th>Action</th>
-                            </tr>
+                    <div class="card-body table-responsive">
+                        <table class="table table-hover">
+                            <thead class="text-warning">
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>PDF</th>
+                            <th>Action</th>
                             </thead>
                             <tbody>
                             @foreach($employees as $employee)
                                 <tr>
                                     <td> {{$employee->id}} </td>
                                     <td> {{$employee->name}} </td>
-                                    <td><a href="{{ route('employee.show', $employee->id) }}" target="_blank">View</a> </td>
                                     <td>
-                                        <form action="{{ route('employee.destroy', $employee->id) }}" method="POST">
+                                        @if(strlen($employee->file) > 0)
+                                            <a href="{{ route('employee.show', $employee->id) }}" target="_blank">View</a>
+                                        @else
+                                            <span>N/A</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a onclick="deleteEmployee()">delete</a>
+                                        <form id="deleteForm" onsubmit="return confirm('Are You sure?')" action="{{ route('employee.destroy', $employee->id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="btn p-0" title="Delete"> <i class="fa fa-trash"></i> </button>
                                         </form>
                                     </td>
                                 </tr>
                             @endforeach
                             </tbody>
                         </table>
-                        @else
-                        <p class="alert alert-info">No Employee Found</p>
-                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        function deleteEmployee(){
+            let deleteForm = document.getElementById('deleteForm');
+            if (confirm('Are you sure?')){
+                deleteForm.submit();
+            }
+        }
+    </script>
+@endpush

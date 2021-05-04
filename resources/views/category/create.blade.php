@@ -1,19 +1,19 @@
-@extends('layouts.app')
+@extends('layouts.theme')
 @section('title')
 Create Category
 @endsection
 
 @section('content')
     <div class="row m-0 p-0">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-12 mx-auto">
             <div class="row m-0 p-0">
                 <div class="col-md-6">
                    <div class="card">
-                       <div class="card-header d-flex justify-content-between align-items-center">
-                            <div class="h3">
+                       <div class="card-header card-header-primary d-flex justify-content-between align-items-center">
+                            <div class="h3 card-title">
                                 Create Category
                             </div>
-                           <a href="{{route('product.create')}}" class="">Create Product</a>
+                           <a href="{{route('product.create')}}" class="card-category fw-bold">Create Product</a>
                        </div>
                        <div class="card-body">
                             @if(Session::has('message'))
@@ -38,7 +38,7 @@ Create Category
                                </div>
 
                                <div class="d-flex justify-content-center mt-3">
-                                   <button type="submit" class="btn btn-success">Crate <i class="fa fa-save"></i></button>
+                                   <button type="submit" class="btn btn-primary">Crate <i class="material-icons">save</i></button>
                                </div>
 
                            </form>
@@ -46,26 +46,49 @@ Create Category
                    </div>
                 </div>
                 <div class="col-md-6 border-left">
-                    @if(count($categories)> 0)
-                        <table class="table table-bordered">
-                            <thead class="thead-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($categories as $category)
-                                <tr>
-                                    <td>{{$category->id}}</td>
-                                    <td title="{{$category->details}}">{{$category->name}}</td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    @else
-                        <h5 class="alert-danger alert">No category found</h5>
-                    @endif
+                    <div class="card">
+                        <div class="card-header-info card-header">
+                            <div class="card-title h3">Category List</div>
+                        </div>
+                        <div class="card-body">
+                            @if(count($categories)> 0)
+                                <table class="table table-hover">
+                                    <thead class="text-info">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($categories as $category)
+                                        <tr>
+                                            <td>{{$category->id}}</td>
+                                            <td title="{{$category->details}}">{{$category->name}}</td>
+                                            <td class="">
+                                                @if(count($category->product) > 0)
+                                                    <button onclick="alert('Delete Failed! \n\nPlease Delete All Products Under this category')" class="btn p-0">
+                                                        <i class="fa fa-trash text-secondary"></i>
+                                                    </button>
+                                                @else
+                                                    <form onsubmit="return confirm('Are you Sure')" action="{{ route('category.destroy', $category->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button class="btn p-0">
+                                                            <i class="fa fa-trash text-danger"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <h5 class="alert-danger alert">No category found</h5>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

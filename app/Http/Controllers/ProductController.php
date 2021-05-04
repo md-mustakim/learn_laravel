@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use App\Product;
+use App\Rating;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -17,7 +21,7 @@ class ProductController extends Controller
     public function index()
     {
         $data = Product::all();
-        return view('welcome', ['productData' => $data, 'category' => Category::all()]);
+        return view('welcome', ['products' => $data, 'category' => Category::all()]);
     }
 
     public function create()
@@ -28,7 +32,8 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $attributes = $request->validate([
+            'category_id' => 'required',
             'name' => 'required|unique:products',
             'details' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048'
@@ -36,23 +41,56 @@ class ProductController extends Controller
 
 
         $imageName = time().'.'.$request->image->extension();
-
         $request->image->move(public_path('images'), $imageName);
+        $attributes['image'] = $imageName;
 
-        $productModel = new Product();
-        $productModel->name = $request->name;
-        $productModel->details = $request->details;
-        $productModel->category_id = $request->category_id;
-        $productModel->image = $imageName;
-        $productModel->save();
+        Product::create($attributes);
         return redirect()->route('product.index')->with('message', 'Create Success');
     }
 
 
     public function show(Product $product)
     {
-        $productShowData = Product::findOrFail($product->id);
-        return view('product.show', ['productData' => $productShowData]);
+        if ($product->rating()->count('*') > 0)
+        {
+            $productRating = $product->rating();
+            $totalRatingCount =  $productRating->sum('score');
+            $ratingCalculate = $totalRatingCount / $productRating->count('*');
+            if (gettype($ratingCalculate) === 'integer'){
+                $rating = $ratingCalculate;
+                $fraction = false;
+            }else{
+                $rating = number_format($ratingCalculate, 1);
+                $fraction = true;
+            }
+            $currentUserId = Auth::id();
+            $checkIfRating = $product->rating()->where('user_id', '=', $currentUserId)->count('*');
+            if ($checkIfRating > 0){
+                $ratingStatus = true;
+            }else{
+                $ratingStatus = false;
+            }
+
+
+
+
+            $ratingData = array(
+                'count' => $productRating->count('*'),
+                'rating' => $rating,
+                'fraction' => $fraction,
+                'status' => $ratingStatus
+            );
+        }else{
+
+            $ratingData = array(
+                'count' => 0,
+                'rating' => 0,
+                'fraction' => false,
+                'status' => false
+            );
+        }
+
+        return view('product.show', ['productData' => $product, 'rating' => (object)$ratingData]);
     }
 
 
@@ -62,25 +100,43 @@ class ProductController extends Controller
     }
 
 
-    public function update(Request $request, Product $product): RedirectResponse
+    public function update(Request $request, Product $product)
     {
-        $request->validate([
-            'name' => 'required|unique:products,name,'.$product->id,
-            'details' => 'required'
+        $attributes = $request->validate([
+            'name' => 'required',
+            'category_id' => 'required',
+            'details' => 'required',
+            'image' => 'nullable|mimes:jpg,jpeg,png'
         ]);
-        $productModel = Product::findOrFail($product->id);
-        $productModel->name = $request->name;
-        $productModel->details = $request->details;
-        $productModel->save();
+
+   if ($request->hasFile('image')){
+            if(file_exists(public_path('images/'. $product->image))){
+                File::delete(public_path('images/'.$product->image));
+            }
+            $imageName = time().'.'.$request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $attributes['image'] = $imageName;
+        }
+
+        $product->update($attributes);
         return redirect()->route('product.index')->with('message', 'Update Success');
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function destroy(Product $product): RedirectResponse
     {
-        $productModel = product::findOrFail($product->id);
-        unlink(public_path('images/'.$productModel->image)); // delete file also
-        $productModel->delete();
+        if ($product->rating()->count('*')){
+            Rating::where('product_id', '=', $product->id)->delete();
+        }
+        if (file_exists(public_path('images/'. $product->image))){
+            File::delete(public_path('images/'.$product->image));
+        }
+        $product->delete();
         return redirect()->route('product.index')->with('message', 'Delete Success');
     }
+
+
 }

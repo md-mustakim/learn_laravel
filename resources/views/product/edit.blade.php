@@ -12,7 +12,7 @@
                         <div class="h2 py-3 px-2 bg-light border-bottom">Product Details</div>
                     </div>
                     <div class="card-body">
-                        <form action="{{route('product.update', $productData->id)}}" method="post">
+                        <form action="{{route('product.update', $productData->id)}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
@@ -23,7 +23,7 @@
                                     </label>
                                 </div>
                                 <div class="col-md-10 my-3">
-                                    <select name="category" id="category" class="form-control">
+                                    <select name="category_id" id="category" class="form-control">
                                         @foreach($categories as $category)
                                             @if($productData->category_id === $category->id)
                                             <option value="{{ $category->id }}" selected> {{ $category->name }} </option>

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Rating;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RatingController extends Controller
 {
@@ -30,12 +32,22 @@ class RatingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $attributes = $request->validate([
+            'score' => 'required',
+            'title' => 'required|min:5',
+            'details' => 'nullable',
+            'product_id' => 'required',
+            'user_id' => 'nullable'
+        ]);
+        $attributes['user_id'] = Auth::id();
+         Rating::create($attributes);
+
+        return back();
     }
 
     /**
@@ -63,7 +75,7 @@ class RatingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  \App\Rating  $rating
      * @return \Illuminate\Http\Response
      */

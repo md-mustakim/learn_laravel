@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return redirect('product');
-});
+Route::get('/', [HomeController::class, 'homePage'])->name('homePage');
 
 Route::get('/bn/', function () {
     App::setLocale('bn');
@@ -29,6 +29,7 @@ Auth::routes();
 Route::resource('product','ProductController');
 Route::resource('category','CategoryController');
 Route::resource('employee','EmployeeController');
+Route::resource('review', 'RatingController');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
@@ -40,4 +41,8 @@ Route::prefix('user')->group(function (){
     Route::post('login', [UserController::class, 'userLogin'])->name('user.login');
     Route::post('store', [UserController::class, 'store'])->name('user.store');
     Route::delete('delete/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+});
+
+Route::prefix('Dashboard')->group(function (){
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 });
