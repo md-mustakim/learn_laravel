@@ -29,8 +29,9 @@
                                            <a href="{{route('product.edit', $product->id)}}" class="Edit Product"><i class="fa fa-edit"></i></a>
                                        @endauth
                                    </div>
-                                   <p class="card-text">Category:  <b>{{$product->category->name}}</b></p>
+                                   <p class="card-text">Category:  <b>{{ $product->category->name }}</b></p>
                                    <p class="card-text">{{ $product->details }}</p>
+                                   <span> {{ number_format($product->rating->sum('score')/count($product->rating),1) }} </span>
                                    <p class="card-text">
                                        Rating:
                                         <i class="fa fa-star text-success"></i>

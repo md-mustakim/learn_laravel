@@ -20,8 +20,12 @@ class ProductController extends Controller
 
     public function index()
     {
-        $data = Product::all();
-        return view('welcome', ['products' => $data, 'category' => Category::all()]);
+        return view('product.view', ['products' => Product::all(), 'category' => Category::all()]);
+    }
+
+    public function ratingCalculator(int $person, int $totalRating): float
+    {
+        return number_format($totalRating / $person,1);
     }
 
     public function create()

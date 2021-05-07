@@ -17,6 +17,8 @@
     <link href="{{ asset('assets/css/material-dashboard.css?v=2.1.2') }}" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="{{ asset('assets/demo/demo.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
+
 </head>
 
 <body class="">
@@ -56,34 +58,21 @@
                         <p>Product</p>
                     </a>
                 </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="./icons.html">
-                        <i class="material-icons">bubble_chart</i>
-                        <p>Icons</p>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="./map.html">
-                        <i class="material-icons">location_ons</i>
-                        <p>Maps</p>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="./notifications.html">
-                        <i class="material-icons">notifications</i>
-                        <p>Notifications</p>
-                    </a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="./rtl.html">
-                        <i class="material-icons">language</i>
-                        <p>RTL Support</p>
-                    </a>
-                </li>
-                <li class="nav-item active-pro ">
-                    <a class="nav-link" href="./upgrade.html">
+                <li class="nav-item {{ (request()->is('user/*')) ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('user.create') }}">
                         <i class="material-icons">person</i>
-                        <p>Login as : Guest</p>
+                        <p>User</p>
+                    </a>
+                </li>
+
+                <li class="nav-item active-pro ">
+                    <a class="nav-link" href="">
+                        <i class="material-icons">person</i>
+                       @if(Auth::check())
+                            <p>Login as : <span class="font-weight-bold font-lora h5">{{ Auth::user()->name }}</span></p>
+                        @else
+                            <p>Login as : Guest</p>
+                        @endif
                     </a>
                 </li>
             </ul>

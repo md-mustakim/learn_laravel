@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.theme')
 @section('content')
     <div class="row m-0 p-0">
         <div class="col-md-6 mx-auto">

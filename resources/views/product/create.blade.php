@@ -13,8 +13,8 @@
                         <div class="h5 font-weight-bold">
                             Add Product
                         </div>
-                        <a href="{{route('product.index')}}" class="card-title h4">
-                            <i class="fa fa-home"></i>
+                        <a href="{{route('product.index')}}" class="card-title h4" title="Product List">
+                            <i class="fa fa-list-alt"></i>
                         </a>
                     </div>
                 </div>

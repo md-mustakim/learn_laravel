@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title')
     @if(count(array($productData)) > 0)
-        {{ $productData->name }} |
+        {{ $productData->name }}
         @endif
 {{--    how show title with product name--}}
 @endsection
@@ -14,9 +14,9 @@
                         <img src="{{asset('images/'.$productData->image)}}" alt="image" style="width: 500px; height: 300px;">
                     </div>
                     <div class="card-body my-2">
-                        <div class="py-4">
+                        <div class="pt-1 pb-3">
                             <div class="card-text">
-                                Name:    <b>{{ $productData->name }}</b>
+                                Name:    <span class="font-weight-bold h4">{{ $productData->name }}</span>
                             </div>
                             <div class="card-text my-2">
                                 Details <b>{{ $productData->details }}</b>
@@ -49,24 +49,17 @@
                                 </div>
                             </div>
                             <div class="col-md-8">
-                                <div class="progress mb-2">
-                                  <div class="progress-bar w-100" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="5"></div>
-                                </div>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar w-50" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="5"></div>
-                                </div>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="3" aria-valuemin="0" aria-valuemax="5"></div>
-                                </div>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar w-75" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="5"></div>
-                                </div>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar w-25" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="5"></div>
-                                </div>
+                                @for($s=1; $s <6; $s++)
+                                    <div class="progress mb-2">
+                                        <div class="progress-bar" style="width: {{$s * 10}}px" role="progressbar" aria-valuenow="5" aria-valuemin="0" aria-valuemax="5"></div>
+                                    </div>
+                                @endfor
                             </div>
 
                         </div>
+                        @guest
+                            <div class="h2 my-5">Please <a href="{{ route('user.login') }}">login</a> for rate this product</div>
+                        @endguest
                         @auth
                             @if(!$rating->status)
                                 <div class="">
@@ -150,8 +143,38 @@
                                 </div>
                             @endif
                         @endauth
+                        <div class="">
+                            <div class="">
+                                @foreach($productData->rating as $item)
+                                    <div class="border my-4 p-3">
+                                        <div class="my-1">
+                                            <span class="h3 font-weight-bold font-lora">{{ $item->user->name }}</span>
+                                        </div>
+                                        <div class="">
+                                            @php
+                                                $star = 1;
+                                            @endphp
+                                            @for($i = 0; $i<5; $i++)
+                                               @if($i < $item->score)
+                                                   <i class="fa fa-star text-success"></i>
+                                                @else
+                                                   <i class="far fa-star text-success"></i>
+                                               @endif
+                                            @endfor
+                                        </div>
+                                        <div class="">
+                                           <span class="h5"> {{ $item->title }}</span>
+                                        </div>
+                                        <div class="">
+                                            {{ $item->details }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
 
                     </div>
+
                 </div>
             @endif
         </div>

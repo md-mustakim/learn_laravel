@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.theme')
 @section('title')
     Show Product
     {{--    how show title with product name--}}
@@ -8,8 +8,8 @@
         <div class="col-md-8 mx-auto">
             @if(!empty($productData))
                 <div class="card">
-                    <div class="card-header">
-                        <div class="h2 py-3 px-2 bg-light border-bottom">Product Details</div>
+                    <div class="card-header card-header-primary">
+                        <div class="h3 font-lora border-bottom card-title font-weight-bold">Edit Product</div>
                     </div>
                     <div class="card-body">
                         <form action="{{route('product.update', $productData->id)}}" method="post" enctype="multipart/form-data">
@@ -33,18 +33,6 @@
                                         @endforeach
                                     </select>
                                     @error('category')
-                                    <div class="alert alert-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-2 my-3">
-                                    <label for="name" class="font-weight-bold h5">
-                                        Name
-                                    </label>
-                                </div>
-                                <div class="col-md-10 my-3">
-                                    <input type="text" name="name" id="name" class="@error('name') is-invalid @enderror form-control" value="{{ $productData->name }}">
-                                    @error('name')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
